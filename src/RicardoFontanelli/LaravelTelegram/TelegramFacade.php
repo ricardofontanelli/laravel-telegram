@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelTelegram\Facades;
+namespace RicardoFontanelli\LaravelTelegram;
 
 use Illuminate\Support\Facades\Facade;
 

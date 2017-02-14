@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelTelegram;
+namespace RicardoFontanelli\LaravelTelegram;
 
 /**
  * Service class to comunicate with Telegram API.
@@ -27,7 +27,10 @@ class Telegram
 
     private $token;
 
-    private $chatId;
+    /**
+     * @var array a list of configured chat room list 'name' => telegram_chat_id
+     */
+    private $chatList = [];
 
     /**
      * @var resource curl instance
@@ -67,7 +70,20 @@ class Telegram
 
         return $this;
     }
-
+    
+    /**
+     * Define a list of chat room that the bot can send messages.
+     *
+     * @param array $list  a list of chat room ids that the Bot can send messages (name => telegram_group_id)
+     *
+     * @return object $this
+     */ 
+    public function setChatList(array $list)
+    {
+        $this->chatList = $list;
+        return $this;
+    }
+    
     public function getResult()
     {
         return $this->result;
@@ -125,7 +141,7 @@ class Telegram
     /**
      * Send a message to a specific chat in Telegram.
      *
-     * @param string $chatId    the id of the chat that the message will be posted
+     * @param string $chatId    the key value of the chat config list. If you provide a concrete chat id (that isn't a key value of the config file), it will be used 
      * @param string $text      a message with maximun lenght of 406 characters
      * @param string $parseMode HTML or Markdown Telegram will parse characteres
      *
@@ -136,6 +152,11 @@ class Telegram
         $params = [];
 
         if (isset($chatId) && isset($text)) {
+            // Define the chat id, by config or concrete value 
+            if (isset($this->chatList[$chatId])) {
+                $chatId = $this->chatList[$chatId];
+            }
+            
             $stringLenUtf8 = mb_strlen($text, 'UTF-8');
 
             if ($stringLenUtf8 > 4096) {
