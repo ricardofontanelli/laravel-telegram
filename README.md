@@ -4,6 +4,7 @@ A simple and lightweight Laravel 4 and 5 wrapper to interact with Telegram Bot.
 ## Get Started:
 * First of all, you should create a Telegram Bot, you can use [Bot Father](https://core.telegram.org/bots#6-botfather) to do that;
 * Create a Telegram chat room (group) and add the Bot to this group, now the Bot can send messages!
+* Open the ```config/telegram.php``` and provide all the information;
 
 ## Installation
 
@@ -45,4 +46,8 @@ Find the `aliases` key in your `config/app.php` and add the Laravel Telegram fac
 
 After that, run ```php artisan vendor:publish config```, to publish the Telegram config file, you must to provide you Telegram Bot credentials and chat room information.
 
-Now you can use it by ```php artisan tinker``` and run ```Telegram::async()->sendMessage(\Config::get('telegram.chats.default'), 'Test message');```
+Now you can use it by ```php artisan tinker``` and run: 
+
+```php 
+Telegram::async()->sendMessage(\Config::get('telegram.chats.default'), 'Test message');
+```
