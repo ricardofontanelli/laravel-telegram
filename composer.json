@@ -1,0 +1,21 @@
+{
+    "name": "ricardofontanelli/laravel-telegram",
+    "homepage": "https://github.com/ricardofontanelli/laravel-telegram",
+    "description": "A simple and lightweight Laravel 4 and 5 wrapper to interact with Telegram Bot.",
+    "keywords": ["laravel", "laravel 5", "laravel 4", "telegram", "bot", "messages", "provider", "facade"],
+    "type": "library",
+    "license": "BSD Style",
+    "authors": [
+        {
+            "name": "Ricardo Fontanelli",
+            "email": "ricardo.fontanelli@hotmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "~4.2"
+    },
+    "autoload": {
+        "psr-4": { "LaravelTelegram\\": "src/" }
+    }
+}
