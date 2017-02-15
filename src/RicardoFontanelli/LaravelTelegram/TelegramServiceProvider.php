@@ -35,7 +35,7 @@ class TelegramServiceProvider extends ServiceProvider
         } else {
             // the default configuration file
             $this->publishes([
-                __DIR__ . '/config.php' => config_path(static::$abstract . '.php'),
+                __DIR__ . '/../../config/config.php' => config_path(static::$abstract . '.php'),
             ], 'config');
         }
 	}
@@ -47,14 +47,24 @@ class TelegramServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(static::$abstract . '.config', function ($app) {
+            // sentry::config is Laravel 4.x
+            $user_config = $app['config'][static::$abstract] ?: $app['config'][static::$abstract . '::config'];
+            // Make sure we don't crash when we did not publish the config file
+            if (is_null($user_config)) {
+                $user_config = [];
+            }
+            return $user_config;
+        });
+        
+        
         $this->app->bind('RicardoFontanelli\LaravelTelegram\Telegram', function ($app) {
             
-            // telegram::config is Laravel 4.x
-            $user_config = $app['config'][static::$abstract] ?: $app['config'][static::$abstract . '::config'];
-            
-            $token          = isset($user_config['token']) ? $user_config['token'] : null;
+            $user_config = $app[static::$abstract . '.config'];
+
+            $token          = isset($user_config['token'])       ? $user_config['token']       : null;
             $botusername    = isset($user_config['botusername']) ? $user_config['botusername'] : null;
-            $chats          = isset($user_config['chats']) ? $user_config['chats'] : [];
+            $chats          = isset($user_config['chats'])       ? $user_config['chats']       : [];
 
             $client = new Telegram($token, $botusername);
             $client->setChatList($chats);
