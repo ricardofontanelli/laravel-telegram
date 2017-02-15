@@ -3,7 +3,7 @@
 namespace RicardoFontanelli\LaravelTelegram;
 
 use Illuminate\Support\ServiceProvider;
-use LaravelTelegram\Telegram;
+use RicardoFontanelli\LaravelTelegram\Telegram;
 
 class TelegramServiceProvider extends ServiceProvider
 {
