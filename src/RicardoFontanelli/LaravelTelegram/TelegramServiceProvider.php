@@ -29,8 +29,11 @@ class TelegramServiceProvider extends ServiceProvider
     */
 	public function boot()
 	{
-        // Laravel 4.x compatibility
-        if (version_compare($this->app::VERSION, '5.0') < 0) {
+
+	$app = $this->app;
+        
+	// Laravel 4.x compatibility
+        if (version_compare($app::VERSION, '5.0') < 0) {
             $this->package('ricardofontanelli/telegram', static::$abstract);
         } else {
             // the default configuration file
