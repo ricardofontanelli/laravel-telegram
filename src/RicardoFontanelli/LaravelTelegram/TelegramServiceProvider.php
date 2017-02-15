@@ -9,6 +9,13 @@ class TelegramServiceProvider extends ServiceProvider
 {
 
     /**
+     * Abstract type to bind Sentry as in the Service Container.
+     *
+     * @var string
+     */
+    public static $abstract = 'telegram';
+    
+    /**
      * Indicates if loading of the provider is deferred.
      *
      * @var bool
@@ -22,7 +29,15 @@ class TelegramServiceProvider extends ServiceProvider
     */
 	public function boot()
 	{
-		$this->package('ricardofontanelli/telegram');
+        // Laravel 4.x compatibility
+        if (version_compare($this->app::VERSION, '5.0') < 0) {
+            $this->package('ricardofontanelli/telegram', static::$abstract);
+        } else {
+            // the default configuration file
+            $this->publishes([
+                __DIR__ . '/config.php' => config_path(static::$abstract . '.php'),
+            ], 'config');
+        }
 	}
 
     /**
@@ -34,13 +49,20 @@ class TelegramServiceProvider extends ServiceProvider
     {
         $this->app->bind('RicardoFontanelli\LaravelTelegram\Telegram', function ($app) {
             
-            $client = new Telegram($app['config']->get('telegram::token', null), $app['config']->get('telegram::botusername', null));
-            $client->setChatList($app['config']->get('telegram::chats', []));
+            // telegram::config is Laravel 4.x
+            $user_config = $app['config'][static::$abstract] ?: $app['config'][static::$abstract . '::config'];
+            
+            $token          = isset($user_config['token']) ? $user_config['token'] : null;
+            $botusername    = isset($user_config['botusername']) ? $user_config['botusername'] : null;
+            $chats          = isset($user_config['chats']) ? $user_config['chats'] : [];
+
+            $client = new Telegram($token, $botusername);
+            $client->setChatList($chats);
             
             return $client;
         });
 
-        $this->app->singleton('telegram', 'RicardoFontanelli\LaravelTelegram\Telegram');
+        $this->app->singleton(static::$abstract, 'RicardoFontanelli\LaravelTelegram\Telegram');
         
     }
 
@@ -51,6 +73,6 @@ class TelegramServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['telegram'];
+        return [static::$abstract];
     }
 }
