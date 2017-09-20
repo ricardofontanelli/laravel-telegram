@@ -7,7 +7,8 @@ A simple and lightweight Laravel 4.2 and Laravel 5.* wrapper to interact with Te
 * After publish the package, open the telegram config file and provide all the required information.
 
 ## Installation
-The Laravel Telegram Service Provider can be installed via ...
+
+1) The Laravel Telegram Service Provider can be installed via ...
 ```sh 
 composer require ricardofontanelli/laravel-telegram:1.0 
 ```
@@ -25,7 +26,8 @@ Then run a composer update
 php composer update
 ```
 
-To use the Laravel Telegram Service Provider, you must register the provider when bootstrapping your application.
+2) To use the Laravel Telegram Service Provider, you must register the provider when bootstrapping your application. If you are using Laravel >= 5.5, the package 
+supports Automatic Package Discovery, skip to the step 3.
 
 In Laravel find the `providers` key in your `config/app.php` and register the Laravel Telegram Service Provider.
 
@@ -45,7 +47,7 @@ Find the `aliases` key in your `config/app.php` and add the Laravel Telegram fac
     )
 ```
 
-After that, run the command above to publish the Telegram config file, you must provide your Telegram Bot credentials and chat room information. 
+3) After that, run the command above to publish the Telegram config file, you must provide your Telegram Bot credentials and chat room information. 
 ## Publishing the package
 Now, you should publish the package to generate the config file, after that, edit the config file with your Telegram Bot credentials.
 ### Laravel 4.2
@@ -58,6 +60,7 @@ The config file will be generate here: ```app/config/telegram.php```
 ```php 
 php artisan vendor:publish --provider="RicardoFontanelli\LaravelTelegram\TelegramServiceProvider"
 ```
+
 ### Send a message:
 Now you can use it by ```php artisan tinker``` and run: 
 
