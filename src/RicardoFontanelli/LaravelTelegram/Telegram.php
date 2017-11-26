@@ -168,9 +168,16 @@ class Telegram
             $params = [
                     'chat_id'   => $chatId,
                     'text'      => $text,
-                    'parse_mode'=> $parseMode,
             ];
-            return $this->callAPI('POST', 'sendMessage', array_merge($params, $additional_params));
+
+            if (is_array($parseMode)) {
+                $params = array_merge($params, $parseMode);
+            } else {
+                $params['parse_mode'] = $parseMode;
+                $params = array_merge($params, $additional_params);
+            }
+
+            return $this->callAPI('POST', 'sendMessage', $params);
         }
         $this->result = ['ok' => false, 'result' => 'Invalid params'];
 
