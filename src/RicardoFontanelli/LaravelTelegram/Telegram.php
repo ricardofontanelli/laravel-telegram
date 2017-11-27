@@ -323,15 +323,9 @@ class Telegram
             curl_close($this->client);
 
             if (!$this->async) {
-                if ($this->httpStatus == '200') {
-                    $this->result = json_decode($this->result, true);
-                    if (is_array($this->result)) {
-                        if (array_key_exists('ok', $this->result)) {
-                            if ($this->result['ok'] == true) {
-                                $this->hasError = false;
-                            }
-                        }
-                    }
+                $this->result = json_decode($this->result, true);
+                if (is_array($this->result) && isset($this->result['ok'])) {
+                    $this->hasError = !$this->result['ok'];
                 }
             } else {
                 $this->hasError = false;
