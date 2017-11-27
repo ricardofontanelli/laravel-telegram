@@ -222,10 +222,13 @@ class Telegram
     {
         (!isset($this->resources[$name])) ? $this->resources[] = $name : null;
 
+        if (count($arguments) == 1 && is_array($arguments[0])) {
+            $arguments = $arguments[0];
+        }
+
         $method = isset($arguments['method']) ? $arguments['method'] : 'POST';
         unset($arguments['method']);
-        $params = json_encode($arguments);
-        return $this->callAPI('POST', $name, json_encode($arguments));
+        return $this->callAPI('POST', $name, $arguments);
     }
 
     /**
@@ -239,10 +242,14 @@ class Telegram
     public function __call($name, $arguments)
     {
         $this->resources[] = $name;
+
+        if (count($arguments) == 1 && is_array($arguments[0])) {
+            $arguments = $arguments[0];
+        }
+
         $method = isset($arguments['method']) ? $arguments['method'] : 'POST';
         unset($arguments['method']);
-        $params = json_encode($arguments);
-        return $this->callAPI('POST', $name, json_encode($arguments));
+        return $this->callAPI('POST', $name, $arguments);
     }
 
     /**
