@@ -131,11 +131,12 @@ class Telegram
     /**
      * A simple method for testing your bot's auth token. Requires no parameters. Returns basic information about the bot
      *
+     * @param array $additional_params Additional parameters to send to the API
      * @return object $this
      */
-    public function getMe()
+    public function getMe($additional_params = [])
     {
-        return $this->callAPI('GET', 'getMe', []);
+        return $this->callAPI('GET', 'getMe', $additional_params);
     }
 
     /**
@@ -144,10 +145,11 @@ class Telegram
      * @param string $chatId    the key value of the chat config list. If you provide a concrete chat id (that isn't a key value of the config file), it will be used 
      * @param string $text      a message with maximun lenght of 406 characters
      * @param string $parseMode HTML or Markdown Telegram will parse characteres
+     * @param array  $additional_params Additional parameters to send to the API
      *
      * @return object $this
      */
-    public function sendMessage($chatId, $text, $parseMode = 'HTML')
+    public function sendMessage($chatId, $text, $parseMode = 'HTML', $additional_params = [])
     {
         $params = [];
 
@@ -166,8 +168,15 @@ class Telegram
             $params = [
                     'chat_id'   => $chatId,
                     'text'      => $text,
-                    'parse_mode'=> $parseMode,
             ];
+
+            if (is_array($parseMode)) {
+                $params = array_merge($params, $parseMode);
+            } else {
+                $params['parse_mode'] = $parseMode;
+                $params = array_merge($params, $additional_params);
+            }
+
             return $this->callAPI('POST', 'sendMessage', $params);
         }
         $this->result = ['ok' => false, 'result' => 'Invalid params'];
@@ -213,10 +222,13 @@ class Telegram
     {
         (!isset($this->resources[$name])) ? $this->resources[] = $name : null;
 
+        if (count($arguments) == 1 && is_array($arguments[0])) {
+            $arguments = $arguments[0];
+        }
+
         $method = isset($arguments['method']) ? $arguments['method'] : 'POST';
         unset($arguments['method']);
-        $params = json_encode($arguments);
-        return $this->callAPI('POST', $name, json_encode($arguments));
+        return $this->callAPI('POST', $name, $arguments);
     }
 
     /**
@@ -230,10 +242,14 @@ class Telegram
     public function __call($name, $arguments)
     {
         $this->resources[] = $name;
+
+        if (count($arguments) == 1 && is_array($arguments[0])) {
+            $arguments = $arguments[0];
+        }
+
         $method = isset($arguments['method']) ? $arguments['method'] : 'POST';
         unset($arguments['method']);
-        $params = json_encode($arguments);
-        return $this->callAPI('POST', $name, json_encode($arguments));
+        return $this->callAPI('POST', $name, $arguments);
     }
 
     /**
@@ -307,15 +323,9 @@ class Telegram
             curl_close($this->client);
 
             if (!$this->async) {
-                if ($this->httpStatus == '200') {
-                    $this->result = json_decode($this->result, true);
-                    if (is_array($this->result)) {
-                        if (array_key_exists('ok', $this->result)) {
-                            if ($this->result['ok'] == true) {
-                                $this->hasError = false;
-                            }
-                        }
-                    }
+                $this->result = json_decode($this->result, true);
+                if (is_array($this->result) && isset($this->result['ok'])) {
+                    $this->hasError = !$this->result['ok'];
                 }
             } else {
                 $this->hasError = false;
