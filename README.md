@@ -8,7 +8,7 @@ A simple and lightweight Laravel 4.2 and Laravel 5.* wrapper to interact with Te
 
 ## Installation
 
-1) The Laravel Telegram Service Provider can be installed via ...
+1) The Laravel Telegram Service Provider can be installed using ...
 ```sh 
 composer require ricardofontanelli/laravel-telegram:1.0 
 ```
@@ -29,7 +29,7 @@ php composer update
 2) To use the Laravel Telegram Service Provider, you must register the provider when bootstrapping your application. If you are using Laravel >= 5.5, the package 
 supports Automatic Package Discovery, skip to the step 3.
 
-In Laravel find the `providers` key in your `config/app.php` and register the Laravel Telegram Service Provider.
+Find the `providers` key in your `config/app.php` and register the Laravel Telegram Service Provider.
 
 ```php
     'providers' => array(
@@ -67,27 +67,35 @@ Now you can use it by ```php artisan tinker``` and run:
 ```php
 // Send a message
 Telegram::sendMessage('default', 'Here we go!');
+
 // or async
 Telegram::async()->sendMessage('default', 'Here we go!');
+
+// Validating the telegram response status
+    $client = Telegram::sendMessage('default', 'Here we go!');
+    if ($client->hasError()) {
+        $error = $client->getResult();
+        echo 'Error: ' . $client->getStatusCode() . ' ' . $error['description'];
+    } else {
+        echo 'Success';
+    }
 ```
 The first value is the config key name of the chat/group id where the Bot will publicate the message, you can provide the chat/group id directly. 
 ### Get information about the Bot:
 ```php
-// Send an async message
 Telegram::getMe()->getResult();
 ```
 
-### Get Bot update:
+### Get Bot updates:
 ```php
-// Send an async message
 Telegram::getUpdates()->getResult();
 ```
 
 ### Other methods:
-The class has use a magic method to call unsuported methods:
+The class uses PHP magic methods to call unsuported methods:
 ```php
 $params = ['method'=>'GET'];
-Telegram::getWebhookInfo($params)->getResult()
+Telegram::getWebhookInfo($params)->getResult();
 ```
 You can use the variable ```$params``` to send query parameters and define the HTTP method (according the Telegram Bot Api documentation).
 

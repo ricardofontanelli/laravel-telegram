@@ -1,0 +1,7 @@
+/vendor
+/.idea
+.env
+tests/_reports
+tests/_reports/*
+composer.lock
+*.DS_Store
