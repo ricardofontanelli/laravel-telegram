@@ -36,4 +36,27 @@ class TelegramTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($telegram->getMe()->getResult()['ok']);
         $this->assertEquals(401, $telegram->getMe()->getStatusCode());
     }
+
+    public function test_get_content()
+    {
+        $this->setBuiltInFunction('curl_exec', '{"ok": false}');
+        $this->setBuiltInFunction('curl_getinfo', 200);
+
+        $telegram   = new Telegram('my-token', 'bot-name');
+        $result     = $telegram->getMe()->getResult();
+        
+        $this->assertEquals($result, $telegram->getContent());
+        $this->assertEquals($result, $telegram->getResponse());
+    }
+
+    public function test_has_error_function()
+    {
+        $this->setBuiltInFunction('curl_exec', '{"ok": true}');
+        $this->setBuiltInFunction('curl_getinfo', 400);
+
+        $telegram   = new Telegram('my-token', 'bot-name');
+        $status     = $telegram->hasError();
+        
+        $this->assertTrue($status);
+    }
 }
