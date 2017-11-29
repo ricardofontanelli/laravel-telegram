@@ -1,6 +1,6 @@
 <?php
 
-namespace RicardoFontanelli\LaravelTelegram\Test;
+namespace RicardoFontanelli\LaravelTelegram\Test\Feature;
 
 use PHPUnit_Framework_TestCase;
 
