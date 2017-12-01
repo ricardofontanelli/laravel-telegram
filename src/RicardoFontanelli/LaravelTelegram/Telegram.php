@@ -176,43 +176,40 @@ class Telegram
     public function sendMessage($chatId, $text, $parseMode = 'HTML', $additionalParams = [])
     {
         $params = [];
-
-        if (isset($chatId) && isset($text)) {
-            // Define the chat id, by config or concrete value
-            if (isset($this->chatList[$chatId])) {
-                $chatId = $this->chatList[$chatId];
-            }
-            
-            $stringLenUtf8 = mb_strlen($text, 'UTF-8');
-
-            if ($stringLenUtf8 > 4096) {
-                $text = mb_substr($text, 0, 4096);
-            }
-
-            $params = [
-                    'chat_id'   => $chatId,
-                    'text'      => $text,
-            ];
-
-            if (is_array($parseMode)) {
-                $params = array_merge($params, $parseMode);
-            } else {
-                $params['parse_mode'] = $parseMode;
-                $params = array_merge($params, $additionalParams);
-            }
-
-            return $this->callAPI('POST', 'sendMessage', $params);
+        
+        // Define the chat id, by config or concrete value
+        if (isset($this->chatList[$chatId])) {
+            $chatId = $this->chatList[$chatId];
         }
-        $this->result = ['ok' => false, 'result' => 'Invalid params'];
+        
+        $stringLenUtf8 = mb_strlen($text, 'UTF-8');
 
+        if ($stringLenUtf8 > 4096) {
+            $text = mb_substr($text, 0, 4096);
+        }
+
+        $params = [
+                'chat_id'   => $chatId,
+                'text'      => $text,
+        ];
+
+        if (is_array($parseMode)) {
+            $params = array_merge($params, $parseMode);
+        } else {
+            $params['parse_mode'] = $parseMode;
+            $params = array_merge($params, $additionalParams);
+        }
+
+        return $this->callAPI('POST', 'sendMessage', $params);
+        
         return $this;
     }
 
     /**
      * Receive incoming updates
      *
-     * @param int $offset dentifier of the first update to be returned
-     * @param int $limit  Limits the number of updates to be retrieved.
+     * @param int $offset  Identifier of the first update to be returned
+     * @param int $limit   Limits the number of updates to be retrieved.
      * @param int $timeout Timeout in seconds for long polling.
      *
      * @return object $this
@@ -235,10 +232,10 @@ class Telegram
     }
 
     /**
-     * Receive incoming updates
+     * Static implementation of __call, for more details, check __call documentation
      *
-     * @param int $name         the name of the method called
-     * @param int $arguments    an array with parameters to be send
+     * @param int $name
+     * @param int $arguments
      *
      * @return object $this
      */
@@ -256,10 +253,11 @@ class Telegram
     }
 
     /**
-     * Receive incoming updates
+     * Execute a custom query to the API
      *
-     * @param int $name         the name of the method called
-     * @param int $arguments    an array with parameters to be send
+     * @param int $name         the name of the method to be called
+     * @param int $arguments    an array with parameters to be send, if the HTTP mthod is GET, don't forget to define a param called $arguments['method'= 'GET',
+     * the default method is POST
      *
      * @return object $this
      */
