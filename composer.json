@@ -4,7 +4,7 @@
     "description": "A simple and lightweight Laravel 4 and 5 wrapper to interact with Telegram Bot.",
     "keywords": ["laravel", "laravel 5", "laravel 4", "telegram", "bot", "messages", "service provider", "provider", "facade"],
     "type": "library",
-    "license": "BSD Style",
+    "license": "MIT",
     "authors": [
         {
             "name": "Ricardo Fontanelli",
