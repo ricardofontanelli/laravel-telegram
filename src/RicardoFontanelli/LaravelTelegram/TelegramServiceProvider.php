@@ -34,7 +34,7 @@ class TelegramServiceProvider extends ServiceProvider
         
 	// Laravel 4.x compatibility
         if (version_compare($app::VERSION, '5.0') < 0) {
-            $this->package('ricardofontanelli/telegram', static::$abstract);
+            $this->package('ricardofontanelli/laravel-telegram', static::$abstract);
         } else {
             // the default configuration file
             $this->publishes([
